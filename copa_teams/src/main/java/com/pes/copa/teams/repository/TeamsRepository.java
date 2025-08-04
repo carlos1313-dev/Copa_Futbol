@@ -22,12 +22,12 @@ public interface TeamsRepository extends JpaRepository<Teams, Long>{
     /**
      * Busca todos los equipos de un continente en específico
      */
-    List<Teams> findTeamByContinent(String continent);
+    List<Teams> findByContinent(String continent);
     
     /**
      * Busca todas las selecciones de un continente
      */
-    List<Teams> findTeamByCountry(String country);
+    List<Teams> findByCountry(String country);
     
 
 }

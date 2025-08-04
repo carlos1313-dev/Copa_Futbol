@@ -20,7 +20,7 @@ public interface CountryRepository extends JpaRepository<Country, Long>{
     /**
      * Busca todas las selecciones de un continente
      */
-    List<Country> findCountryByContinent(String continent);
+    List<Country> findByContinent(String continent);
     
     /**
      * Busca todas las selecciones mundialistas
