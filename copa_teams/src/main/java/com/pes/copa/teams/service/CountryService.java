@@ -30,6 +30,13 @@ public class CountryService {
         return countryRepository.findCountryByContinent(continent);
     }
     
+    /**
+     * Busca todas las selecciones mundialistas.
+     */
+    public List<Country> getCountriesByIsMundialist() {
+        return countryRepository.findByIsMundialistTrue();
+    }
+    
     
     
     /**

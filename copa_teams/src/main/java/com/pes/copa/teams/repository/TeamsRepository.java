@@ -20,11 +20,6 @@ import org.springframework.stereotype.Repository;
 public interface TeamsRepository extends JpaRepository<Teams, Long>{
     
     /**
-     * Busca todas las selecciones de un continente
-     */
-    List<Teams> findCountryByContinent(String continent);
-    
-    /**
      * Busca todos los equipos de un continente en específico
      */
     List<Teams> findTeamByContinent(String continent);

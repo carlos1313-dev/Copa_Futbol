@@ -4,10 +4,26 @@
  */
 package com.pes.copa.teams.repository;
 
+import com.pes.copa.teams.entity.Country;
+import com.pes.copa.teams.entity.Teams;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 /**
  *
  * @author sangr
  */
-public class CountryRepository {
+@Repository
+public interface CountryRepository extends JpaRepository<Country, Long>{
     
+    /**
+     * Busca todas las selecciones de un continente
+     */
+    List<Country> findCountryByContinent(String continent);
+    
+    /**
+     * Busca todas las selecciones mundialistas
+     */
+    List<Country> findByIsMundialistTrue();
 }

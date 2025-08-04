@@ -35,5 +35,7 @@ public class Country {
     @Column(unique = true, nullable = false)    
     private String flag;
     
+    @Column(nullable = false)
+    private boolean isMundialist;
     
 }

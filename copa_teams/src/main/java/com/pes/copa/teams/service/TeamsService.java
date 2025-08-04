@@ -23,13 +23,6 @@ public class TeamsService {
     }
 
     /**
-     * Busca todas las selecciones de un continente.
-     */
-    public List<Teams> getCountriesByContinent(String continent) {
-        return teamsRepository.findCountryByContinent(continent);
-    }
-
-    /**
      * Busca todos los equipos de un continente específico.
      */
     public List<Teams> getTeamsByContinent(String continent) {
