@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.pes.copa.teams.entity;
+package com.pes.copa.teamscontroller;
 
 /**
  *
  * @author sangr
  */
-public class User {
+public class CountryController {
     
 }

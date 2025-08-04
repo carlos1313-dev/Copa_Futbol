@@ -18,7 +18,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class Teams {
+public class Country {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //El id es un valor autogenerado en la BD
@@ -30,13 +30,10 @@ public class Teams {
     
     @Column (nullable = false)
     @Size (min = 2, max = 50)
-    private String country;
-    
-    @Column (nullable = false)
-    @Size (min = 2, max = 50)
     private String continent;
     
     @Column(unique = true, nullable = false)    
-    private String logo;
+    private String flag;
+    
     
 }
