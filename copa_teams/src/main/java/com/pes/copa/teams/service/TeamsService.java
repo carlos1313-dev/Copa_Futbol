@@ -82,6 +82,14 @@ public class TeamsService {
             throw new RuntimeException("Error al acceder a la base de datos", e);
         }
     }
+    
+    public List<Teams> getTeamsByIsChampions() {
+        try {
+            return teamsRepository.findByIsChampionsTrue();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error al acceder a la base de datos", e);
+        }
+    }
 
     /**
      * Retorna todos los equipos registrados.

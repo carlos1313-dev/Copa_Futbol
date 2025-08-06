@@ -29,5 +29,9 @@ public interface TeamsRepository extends JpaRepository<Teams, Long>{
      */
     List<Teams> findByCountry(String country);
     
+    /**
+     * Busca todos los equipos clasificados a champions
+     */
+    List<Teams> findByIsChampionsTrue();
 
 }

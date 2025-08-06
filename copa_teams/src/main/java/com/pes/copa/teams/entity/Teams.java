@@ -39,4 +39,7 @@ public class Teams {
     @Column(unique = true, nullable = false)    
     private String logo;
     
+    @Column(unique = true, nullable = false)    
+    private boolean isChampions;
+    
 }

@@ -61,6 +61,20 @@ public class TeamsController {
     }
     
     /**
+     * Obtiene todas las selecciones mundialistas
+     * @return lista de países mundialistas
+     */
+    @GetMapping("/champions")
+    public ResponseEntity<List<Teams>> getTeamsByIsChampions() {
+        try {
+            List<Teams> teams = teamsService.getTeamsByIsChampions();
+            return ResponseEntity.ok(teams);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
+    }
+    
+    /**
      * Obtiene un equipo por su ID
      * @param id identificador del equipo
      * @return el equipo encontrado
