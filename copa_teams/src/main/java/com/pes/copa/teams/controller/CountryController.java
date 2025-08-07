@@ -79,7 +79,7 @@ public class CountryController {
      * Obtiene todos los países
      * @return lista de todos los países
      */
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Country>> getAllCountries() {
         try {
             List<Country> countries = countryService.getAllCountries();

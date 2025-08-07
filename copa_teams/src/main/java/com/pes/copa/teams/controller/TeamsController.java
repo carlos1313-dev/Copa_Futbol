@@ -96,7 +96,7 @@ public class TeamsController {
      * Obtiene todos los equipos
      * @return lista de todos los equipos
      */
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Teams>> getAllTeams() {
         try {
             List<Teams> teams = teamsService.getAllTeams();

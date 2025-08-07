@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pes.copa.teams.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
- *
+ * Entidad que representa un equipo de club
  * @author sangr
  */
 @Data
@@ -21,25 +18,31 @@ import lombok.Data;
 public class Teams {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //El id es un valor autogenerado en la BD
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
     
-    @Column(unique = true, nullable = false, length = 100) //Se crea una columna de valor único (no se puede repetir nombre), que no puede estar vacío
-    @Size (min = 2, max = 50)
+    @Column(unique = true, nullable = false, length = 100)
+    @Size(min = 2, max = 50)
+    @JsonProperty("name")
     private String name;
     
-    @Column (nullable = false)
-    @Size (min = 2, max = 50)
+    @Column(nullable = false)
+    @Size(min = 2, max = 50)
+    @JsonProperty("country")
     private String country;
     
-    @Column (nullable = false)
-    @Size (min = 2, max = 50)
+    @Column(nullable = false)
+    @Size(min = 2, max = 50)
+    @JsonProperty("continent")
     private String continent;
     
-    @Column(unique = true, nullable = false)    
-    private String logo;
+    @Column(name = "logoURL", unique = true, nullable = false)    
+    @JsonProperty("logoURL")
+    private String logoURL;
     
-    @Column(unique = true, nullable = false)    
+    @Column(name = "isChampions", nullable = false)    
+    @JsonProperty("isChampions") 
     private boolean isChampions;
     
 }
