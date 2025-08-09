@@ -32,14 +32,14 @@ public class CreateTournamentDTO {
     @NotNull(message = "El número máximo de jugadores es obligatorio")
     @Min(value = 1, message = "Debe haber al menos 1 jugador")
     @Max(value = 32, message = "Máximo 32 jugadores")
-    @JsonProperty("maxPlayers")
-    private Integer maxPlayers;
+    @JsonProperty("numPlayers")
+    private Integer numPlayers;
     
     @NotNull(message = "El número total de equipos es obligatorio")
     @Min(value = 4, message = "Debe haber al menos 4 equipos")
-    @Max(value = 64, message = "Máximo 64 equipos")
-    @JsonProperty("totalTeams")
-    private Integer totalTeams;
+    @Max(value = 32, message = "Máximo 32 equipos")
+    @JsonProperty("numTeams")
+    private Integer numTeams;
     
     @NotNull(message = "El ID del creador es obligatorio")
     @JsonProperty("creatorUserId")

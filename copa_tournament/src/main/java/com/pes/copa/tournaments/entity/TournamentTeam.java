@@ -39,4 +39,8 @@ public class TournamentTeam {
     @Column(name = "is_eliminated", nullable = false)
     @JsonProperty("isEliminated")
     private Boolean isEliminated = false;
+    
+    @Column(name = "position", length = 5)
+    @JsonProperty("position")
+    private Integer position; 
 }

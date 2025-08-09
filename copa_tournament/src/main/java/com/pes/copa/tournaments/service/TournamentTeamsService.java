@@ -174,6 +174,17 @@ public class TournamentTeamsService {
         }
     }
     
+    public List<TournamentTeam> getTeamsByIsEliminatedFalse(Long tournamentId) {
+        if (tournamentId == null) {
+            throw new IllegalArgumentException("El ID del torneo no puede ser nulo");
+        } 
+        try {
+            return tournamentTeamRepository.findByTournamentIdAndIsEliminatedFalse(tournamentId);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error al acceder a la base de datos", e);
+        }
+    }
+    
     /**
      * Determina el tipo de equipo basado en el tipo de torneo
      * @param tournament el torneo

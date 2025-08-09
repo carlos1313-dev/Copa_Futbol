@@ -28,8 +28,8 @@ public class TournamentDTO {
     @JsonProperty("status")
     private String status; // String para mostrar nombre legible
     
-    //@JsonProperty("maxPlayers")
-    //private Integer maxPlayers;
+    @JsonProperty("availableSlots")
+    private Integer availableSlots;
     
     @JsonProperty("numPlayers")
     private Integer numPlayers;

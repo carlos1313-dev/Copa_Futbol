@@ -11,24 +11,30 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TournamentRepository extends JpaRepository<Tournament, Long> {
-    
+
     /**
      * Busca torneos por estado
      */
     List<Tournament> findByStatus(TournamentStatus status);
-    
+
     /**
      * Busca torneos por tipo
      */
     List<Tournament> findByTournamentType(TournamentType tournamentType);
-    
+
     /**
      * Busca torneos creados por un usuario específico
      */
     List<Tournament> findByCreatorUserIdOrderByCreatedDateDesc(Long creatorUserId);
-    
+
     /**
      * Busca torneos por estado y tipo
      */
     List<Tournament> findByStatusAndTournamentType(TournamentStatus status, TournamentType tournamentType);
+
+    /**
+     * Busca torneos disponibles para unirse (actualizado)
+     */
+    @Query("SELECT t FROM Tournament t WHERE t.status = :status AND t.numPlayers < t.numTeams")
+    List<Tournament> findAvailableToJoin(@Param("status") TournamentStatus status);
 }

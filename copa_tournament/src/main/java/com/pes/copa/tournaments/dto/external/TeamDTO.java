@@ -10,6 +10,7 @@ public class TeamDTO {
     private Long id;
     private String name;
     private String country;
+    private String continent;
     private String logoURL;
     private Boolean isChampions;
 }

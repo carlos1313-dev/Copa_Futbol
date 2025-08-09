@@ -45,13 +45,12 @@ public class TournamentMapper {
         tournament.setName(dto.getName().trim());
         tournament.setTournamentType(dto.getTournamentType());
         tournament.setTournamentFormat(dto.getTournamentFormat());
-        tournament.setMaxPlayers(dto.getMaxPlayers());
-        tournament.setTotalTeams(dto.getTotalTeams());
+        tournament.setNumTeams(dto.getNumTeams()); // Cambio aquí
         tournament.setCreatorUserId(dto.getCreatorUserId());
         
         // Valores por defecto al crear
         tournament.setStatus(TournamentStatus.CREATED);
-        tournament.setCurrentPlayers(0);
+        tournament.setNumPlayers(0); // Cambio aquí
         tournament.setCreatedDate(LocalDateTime.now());
         
         return tournament;
@@ -59,8 +58,6 @@ public class TournamentMapper {
     
     /**
      * Convierte Entity Tournament a TournamentDTO para respuesta
-     * @param tournament entidad de BD
-     * @return DTO para enviar al frontend
      */
     public TournamentDTO entityToDTO(Tournament tournament) {
         if (tournament == null) {
@@ -73,13 +70,13 @@ public class TournamentMapper {
                 .tournamentType(tournament.getTournamentType().getDisplayName())
                 .tournamentFormat(tournament.getTournamentFormat().getDisplayName())
                 .status(tournament.getStatus().getDisplayName())
-                .maxPlayers(tournament.getMaxPlayers())
-                .currentPlayers(tournament.getCurrentPlayers())
-                .totalTeams(tournament.getTotalTeams())
+                .numPlayers(tournament.getNumPlayers()) // Cambio aquí
+                .numTeams(tournament.getNumTeams()) // Cambio aquí
                 .createdDate(tournament.getCreatedDate())
                 .creatorUserId(tournament.getCreatorUserId())
                 .canJoin(calculateCanJoin(tournament))
                 .isStarted(calculateIsStarted(tournament))
+                .availableSlots(tournament.getNumTeams() - tournament.getNumPlayers()) // Nuevo campo calculado
                 .build();
     }
     
@@ -267,9 +264,9 @@ public class TournamentMapper {
                 .format(tournament.getTournamentFormat().name())
                 .groups(groups.isEmpty() ? null : groups)
                 .bracket(bracket.isEmpty() ? null : bracket)
-                .totalPositions(tournament.getTotalTeams())
+                .totalPositions(tournament.getNumTeams())
                 .filledPositions((int) filledPositions)
-                .isComplete(filledPositions == tournament.getTotalTeams())
+                .isComplete(filledPositions == tournament.getNumTeams())
                 .build();
     }
     
@@ -283,9 +280,9 @@ public class TournamentMapper {
      * @return true si puede unirse más gente
      */
     private Boolean calculateCanJoin(Tournament tournament) {
-        return tournament.getStatus() == TournamentStatus.CREATED || 
-               tournament.getStatus() == TournamentStatus.WAITING_PLAYERS &&
-               tournament.getCurrentPlayers() < tournament.getMaxPlayers();
+        return (tournament.getStatus() == TournamentStatus.CREATED || 
+               tournament.getStatus() == TournamentStatus.WAITING_PLAYERS) &&
+               tournament.getNumPlayers() < tournament.getNumTeams(); // Cambio aquí
     }
     
     /**
@@ -328,10 +325,8 @@ public class TournamentMapper {
                                                               List<TeamPositionDTO> existing) {
         List<TeamPositionDTO> missing = new ArrayList<>();
         
-        // Lógica para calcular grupos faltantes
-        // Por ejemplo: 4 equipos por grupo, grupos A, B, C, D
         int teamsPerGroup = 4;
-        int totalGroups = tournament.getTotalTeams() / teamsPerGroup;
+        int totalGroups = tournament.getNumTeams() / teamsPerGroup; // Cambio aquí
         
         for (int group = 0; group < totalGroups; group++) {
             String groupName = String.valueOf((char) ('A' + group));
@@ -361,7 +356,7 @@ public class TournamentMapper {
                                                                 List<TeamPositionDTO> existing) {
         List<TeamPositionDTO> missing = new ArrayList<>();
         
-        for (int position = 1; position <= tournament.getTotalTeams(); position++) {
+        for (int position = 1; position <= tournament.getNumTeams(); position++) { // Cambio aquí
             final int finalPosition = position;
             boolean exists = existing.stream().anyMatch(p -> 
                 finalPosition == (p.getPosition() != null ? p.getPosition() : 0)

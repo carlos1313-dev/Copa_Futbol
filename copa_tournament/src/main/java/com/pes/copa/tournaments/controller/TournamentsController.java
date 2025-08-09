@@ -1,7 +1,7 @@
 package com.pes.copa.tournaments.controller;
 
 import com.pes.copa.tournaments.dto.request.CreateTournamentDTO;
-import com.pes.copa.tournaments.dto.request.JoinTournamentDTO;
+
 import com.pes.copa.tournaments.dto.response.TournamentDTO;
 import com.pes.copa.tournaments.enums.TournamentStatus;
 import com.pes.copa.tournaments.enums.TournamentType;
@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/tournaments")
-public class TournamentController {
+public class TournamentsController {
     
     private final TournamentService tournamentService;
     
     @Autowired
-    public TournamentController(TournamentService tournamentService) {
+    public TournamentsController(TournamentService tournamentService) {
         this.tournamentService = tournamentService;
     }
     
