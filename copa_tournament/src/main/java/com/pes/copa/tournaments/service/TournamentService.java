@@ -236,7 +236,7 @@ public class TournamentService {
             tournament.setNumPlayers((int) currentPlayers); // Cambio aquí
 
             // Si se llenó el torneo de jugadores, cambiar estado
-            if (currentPlayers >= tournament.getNumTeams()
+            if (currentPlayers >= tournament.getNumPlayers()
                     && // Cambio aquí
                     tournament.getStatus() == TournamentStatus.CREATED) {
                 tournament.setStatus(TournamentStatus.WAITING_PLAYERS);

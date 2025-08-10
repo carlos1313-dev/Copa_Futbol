@@ -37,4 +37,6 @@ public interface TournamentRepository extends JpaRepository<Tournament, Long> {
      */
     @Query("SELECT t FROM Tournament t WHERE t.status = :status AND t.numPlayers < t.numTeams")
     List<Tournament> findAvailableToJoin(@Param("status") TournamentStatus status);
+    
+ 
 }

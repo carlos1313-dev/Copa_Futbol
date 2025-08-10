@@ -124,18 +124,18 @@ public class TournamentsController {
      * @param type tipo de torneo (WORLD_CUP, COPA_AMERICA, etc.)
      * @return lista de torneos del tipo especificado
      */
-    @GetMapping("/type/{type}")
-    public ResponseEntity<List<TournamentDTO>> getTournamentsByType(@PathVariable String type) {
-        try {
-            TournamentType tournamentType = TournamentType.valueOf(type.toUpperCase());
-            List<TournamentDTO> tournaments = tournamentService.getTournamentsByType(tournamentType);
-            return ResponseEntity.ok(tournaments);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
-        }
-    }
+//    @GetMapping("/type/{type}")
+//    public ResponseEntity<List<TournamentDTO>> getTournamentsByType(@PathVariable String type) {
+//        try {
+//            TournamentType tournamentType = TournamentType.valueOf(type.toUpperCase());
+//            List<TournamentDTO> tournaments = tournamentService.getTournamentsByType(tournamentType);
+//            return ResponseEntity.ok(tournaments);
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().build();
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+//        }
+//    }
     
     /**
      * Actualiza el estado de un torneo
