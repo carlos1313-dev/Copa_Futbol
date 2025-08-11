@@ -6,7 +6,8 @@ package com.pes.copa.matches.client;
 
 import com.pes.copa.matches.dto.response.MatchResultDTO;
 import java.util.List;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
