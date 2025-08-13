@@ -8,6 +8,11 @@ package com.pes.copa.matches.dto.external;
  *
  * @author sangr
  */
-public class TournamentTeamDTO {
-    
+import lombok.Data;
+
+@Data
+public class UserDTO {
+    private Long id;
+    private String username;
+    private String email;
 }

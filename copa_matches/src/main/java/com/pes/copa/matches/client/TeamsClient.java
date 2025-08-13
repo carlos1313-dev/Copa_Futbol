@@ -3,13 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.pes.copa.matches.client;
-
-/**
- *
- * @author sangr
- */
-import com.pes.copa.matches.dto.external.TeamBasicDTO;
-import com.pes.copa.matches.dto.response.TeamBasicDTO;
+import com.pes.copa.matches.dto.external.CountryDTO;
+import com.pes.copa.matches.dto.external.TeamDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -28,24 +23,24 @@ public class TeamsClient {
     }
     
     /**
-     *  Obtiene información básica de un país con manejo de errores
+     * Obtiene información de un país/selección nacional
      */
-    public TeamBasicDTO getCountryBasicInfo(Long countryId) {
+    public CountryDTO getCountry(Long countryId) {
         try {
-            String url = teamsServiceUrl + "/api/v1/countries/" + countryId + "/basic";
-            return restTemplate.getForObject(url, TeamBasicDTO.class);
+            String url = teamsServiceUrl + "/api/v1/countries/" + countryId;
+            return restTemplate.getForObject(url, CountryDTO.class);
         } catch (RestClientException e) {
             throw new RuntimeException("Failed to get country info: " + e.getMessage());
         }
     }
     
     /**
-     *  Obtiene información básica de un equipo con manejo de errores
+     * Obtiene información de un equipo de club
      */
-    public TeamBasicDTO getTeamBasicInfo(Long teamId) {
+    public TeamDTO getTeam(Long teamId) {
         try {
-            String url = teamsServiceUrl + "/api/v1/teams/" + teamId + "/basic";
-            return restTemplate.getForObject(url, TeamBasicDTO.class);
+            String url = teamsServiceUrl + "/api/v1/teams/" + teamId;
+            return restTemplate.getForObject(url, TeamDTO.class);
         } catch (RestClientException e) {
             throw new RuntimeException("Failed to get team info: " + e.getMessage());
         }

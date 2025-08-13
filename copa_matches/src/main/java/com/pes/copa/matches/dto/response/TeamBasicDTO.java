@@ -5,7 +5,6 @@
 package com.pes.copa.matches.dto.response;
 
 import lombok.Data;
-
 /**
  *
  * @author sangr
@@ -14,7 +13,18 @@ import lombok.Data;
 public class TeamBasicDTO {
     private Long id;
     private String name;
-    private String logoUrl;
+    private String logoUrl; 
+    private String flagUrl;  // Para países
+    private String country;  // Solo para clubes
+    private String continent;
+    private String teamType; // "COUNTRY" o "CLUB"
+    
+    // Información del contexto del torneo
     private Long playerId; // null si es IA
     private String playerName; // null si es IA
+    private Boolean isAI;
+    
+    // Información específica del equipo
+    private Boolean isMundialist; // Solo para países
+    private Boolean isChampions;  // Solo para clubes
 }

@@ -1,10 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pes.copa.matches.client;
 
-import com.pes.copa.matches.dto.external.TournamentTeamDTO;
+import com.pes.copa.matches.dto.external.TournamentDTO;
+import com.pes.copa.matches.dto.external.TeamPositionDTO;
+import com.pes.copa.matches.dto.external.TournamentStructureDTO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,10 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-/**
- *
- * @author sangr
- */
 @Component
 public class TournamentClient {
     
@@ -29,7 +23,7 @@ public class TournamentClient {
     }
     
     /**
-     * Obtiene información del torneo
+     * Obtiene información básica del torneo
      */
     public TournamentDTO getTournament(Long tournamentId) {
         String url = tournamentServiceUrl + "/api/v1/tournaments/" + tournamentId;
@@ -37,18 +31,37 @@ public class TournamentClient {
     }
     
     /**
-     * Obtiene equipos del torneo
+     * Obtiene la estructura completa del torneo (equipos y posiciones)
      */
-    public List<TournamentTeamDTO> getTournamentTeams(Long tournamentId) {
-        String url = tournamentServiceUrl + "/api/v1/tournaments/" + tournamentId + "/teams";
+    public TournamentStructureDTO getTournamentStructure(Long tournamentId) {
+        String url = tournamentServiceUrl + "/api/v1/tournaments/" + tournamentId + "/structure";
+        return restTemplate.getForObject(url, TournamentStructureDTO.class);
+    }
+    
+    /**
+     * Obtiene equipos de un jugador específico en el torneo
+     */
+    public List<TeamPositionDTO> getPlayerTeams(Long tournamentId, Long playerId) {
+        String url = tournamentServiceUrl + "/api/v1/tournaments/" + tournamentId + "/players/" + playerId + "/teams";
         return restTemplate.exchange(
-            url, HttpMethod.GET, null, 
-            new ParameterizedTypeReference<List<TournamentTeamDTO>>() {}
+            url, HttpMethod.GET, null,
+            new ParameterizedTypeReference<List<TeamPositionDTO>>() {}
         ).getBody();
     }
     
     /**
-     * Actualiza estado del torneo
+     * Obtiene todos los equipos del torneo
+     */
+    public List<TeamPositionDTO> getTournamentTeams(Long tournamentId) {
+        String url = tournamentServiceUrl + "/api/v1/tournaments/" + tournamentId + "/teams";
+        return restTemplate.exchange(
+            url, HttpMethod.GET, null,
+            new ParameterizedTypeReference<List<TeamPositionDTO>>() {}
+        ).getBody();
+    }
+    
+    /**
+     * Actualiza el estado del torneo
      */
     public void updateTournamentStatus(Long tournamentId, String status) {
         String url = tournamentServiceUrl + "/api/v1/tournaments/" + tournamentId + "/status?status=" + status;

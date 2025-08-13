@@ -3,53 +3,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.pes.copa.matches.dto.external;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDateTime;
-import lombok.Builder;
-import lombok.Data;
-
 /**
  *
  * @author sangr
  */
+import lombok.Data;
+import java.time.LocalDateTime;
+
 @Data
-@Builder
 public class TournamentDTO {
-    
-    @JsonProperty("id")
     private Long id;
-    
-    @JsonProperty("name")
     private String name;
-    
-    @JsonProperty("tournamentType")
-    private String tournamentType; // String para mostrar nombre legible
-    
-    @JsonProperty("tournamentFormat")
-    private String tournamentFormat; // String para mostrar nombre legible
-    
-    @JsonProperty("status")
-    private String status; // String para mostrar nombre legible
-    
-    @JsonProperty("availableSlots")
+    private String tournamentType; // WORLD_CUP, COPA_AMERICA, etc.
+    private String tournamentFormat; // GROUPS_THEN_KNOCKOUT, DIRECT_KNOCKOUT
+    private String status; // CREATED, IN_PROGRESS, FINISHED
     private Integer availableSlots;
-    
-    @JsonProperty("numPlayers")
     private Integer numPlayers;
-    
-    @JsonProperty("numTeams")
     private Integer numTeams;
-    
-    @JsonProperty("createdDate")
     private LocalDateTime createdDate;
-    
-    @JsonProperty("creatorUserId")
     private Long creatorUserId;
-    
-    @JsonProperty("canJoin")
-    private Boolean canJoin; // Calculado: si el torneo acepta más jugadores
-    
-    @JsonProperty("isStarted")
-    private Boolean isStarted; // Calculado: si el torneo ya comenzó
+    private Boolean canJoin;
+    private Boolean isStarted;
 }
