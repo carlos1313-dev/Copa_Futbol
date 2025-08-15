@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "*")
 public class AuthController {
     
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);

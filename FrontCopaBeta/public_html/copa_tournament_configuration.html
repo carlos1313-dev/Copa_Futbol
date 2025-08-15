@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa - Configurar Torneo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fondos específicos por competición */
+        body.champions-league { background: linear-gradient(135deg, #001122 0%, #003366 50%, #001f3f 100%); }
+        body.libertadores { background: linear-gradient(135deg, #220000 0%, #440000 50%, #330000 100%); }
+        body.world-cup { background: linear-gradient(135deg, #002200 0%, #004400 50%, #003300 100%); }
+        body.euro-cup { background: linear-gradient(135deg, #000033 0%, #000066 50%, #000044 100%); }
+        body.copa-america { background: linear-gradient(135deg, #332200 0%, #664400 50%, #443300 100%); }
+        body.custom { background: linear-gradient(135deg, #222222 0%, #444444 50%, #333333 100%); }
+
+        /* Partículas de fondo */
+        .background-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00a8ff;
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+            opacity: 0.6;
+        }
+
+        /* Partículas temáticas */
+        body.champions-league .particle { background: #00a8ff; }
+        body.libertadores .particle { background: #ff6b35; }
+        body.world-cup .particle { background: #00ff80; }
+        body.euro-cup .particle { background: #3366ff; }
+        body.copa-america .particle { background: #ffaa00; }
+        body.custom .particle { background: #cccccc; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 1; }
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 20, 40, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 168, 255, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-btn {
+            background: rgba(0, 168, 255, 0.1);
+            border: 1px solid rgba(0, 168, 255, 0.3);
+            color: #00a8ff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 168, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 168, 255, 0.3);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 15px #00a8ff;
+            letter-spacing: 2px;
+        }
+
+        .logo .highlight {
+            color: #00a8ff;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .welcome-text {
+            color: #ccc;
+            font-size: 16px;
+        }
+
+        .username {
+            color: #00a8ff;
+            font-weight: bold;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            padding: 40px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header de la competición */
+        .competition-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .competition-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .competition-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 3px solid;
+            border-radius: 50%;
+            animation: rotateBorder 3s linear infinite;
+        }
+
+        @keyframes rotateBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Logos específicos */
+        .champions-league-logo { 
+            background: linear-gradient(45deg, #001f3f, #003366);
+            border-color: #00a8ff;
+        }
+        .champions-league-logo::before { border-color: #00a8ff; }
+
+        .libertadores-logo { 
+            background: linear-gradient(45deg, #660000, #cc0000);
+            border-color: #ff6b35;
+        }
+        .libertadores-logo::before { border-color: #ff6b35; }
+
+        .world-cup-logo { 
+            background: linear-gradient(45deg, #004d00, #009900);
+            border-color: #00ff80;
+        }
+        .world-cup-logo::before { border-color: #00ff80; }
+
+        .euro-cup-logo { 
+            background: linear-gradient(45deg, #000066, #0000cc);
+            border-color: #3366ff;
+        }
+        .euro-cup-logo::before { border-color: #3366ff; }
+
+        .copa-america-logo { 
+            background: linear-gradient(45deg, #cc6600, #ff9900);
+            border-color: #ffaa00;
+        }
+        .copa-america-logo::before { border-color: #ffaa00; }
+
+        .custom-logo { 
+            background: linear-gradient(45deg, #333333, #666666);
+            border-color: #cccccc;
+        }
+        .custom-logo::before { border-color: #cccccc; }
+
+        .competition-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px currentColor;
+        }
+
+        .competition-subtitle {
+            color: #aaa;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        /* Formulario de configuración */
+        .config-form {
+            background: rgba(0, 20, 40, 0.9);
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .config-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, currentColor, transparent);
+            animation: glow-line 2s infinite;
+        }
+
+        @keyframes glow-line {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Colores de borde por competición */
+        .champions-league .config-form { border-color: #00a8ff; color: #00a8ff; }
+        .libertadores .config-form { border-color: #ff6b35; color: #ff6b35; }
+        .world-cup .config-form { border-color: #00ff80; color: #00ff80; }
+        .euro-cup .config-form { border-color: #3366ff; color: #3366ff; }
+        .copa-america .config-form { border-color: #ffaa00; color: #ffaa00; }
+        .custom .config-form { border-color: #cccccc; color: #cccccc; }
+
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            color: currentColor;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 40, 80, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: currentColor;
+            box-shadow: 0 0 15px currentColor;
+            background: rgba(0, 40, 80, 0.9);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        .form-select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        /* Info cards predefinidas */
+        .predefined-info {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: currentColor;
+            margin-bottom: 5px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Configuración personalizada */
+        .custom-config {
+            display: none;
+        }
+
+        .custom-config.active {
+            display: block;
+        }
+
+        /* Botones */
+        .form-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ccc;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, currentColor, currentColor);
+            filter: brightness(0.8);
+            color: white;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            filter: brightness(1);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px 25px;
+            }
+            
+            .header {
+                padding: 15px 25px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .config-form {
+                padding: 25px 20px;
+            }
+            
+            .competition-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body id="pageBody">
+    <!-- Fondo con partículas -->
+    <div class="background-particles" id="particles"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="nav-section">
+            <button class="back-btn" onclick="goBack()">← Volver</button>
+            <div class="logo">
+                <span class="highlight">COPA</span> 2025
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="welcome-text">
+                <span class="username" id="username">Usuario</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Header de competición -->
+        <div class="competition-header">
+            <div class="competition-logo" id="competitionLogo">
+                <span id="logoText">UCL</span>
+            </div>
+            <h1 class="competition-title" id="competitionTitle">UEFA Champions League</h1>
+            <p class="competition-subtitle" id="competitionSubtitle">Configura tu torneo</p>
+        </div>
+
+        <!-- Formulario de configuración -->
+        <div class="config-form">
+            <form id="configForm">
+                <!-- Información predefinida -->
+                <div class="form-section" id="predefinedSection">
+                    <h3 class="section-title">Información del Torneo</h3>
+                    <div class="predefined-info" id="predefinedInfo">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-value" id="infoTeams">32</div>
+                                <div class="info-label">Equipos</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-value" id="infoFormat">Grupos + Eliminatorias</div>
+                                <div class="info-label">Formato</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-value" id="infoType">Clubes</div>
+                                <div class="info-label">Tipo</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-value" id="infoRegion">Europa</div>
+                                <div class="info-label">Región</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración básica -->
+                <div class="form-section">
+                    <h3 class="section-title">Configuración Básica</h3>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label class="form-label">Nombre del Torneo</label>
+                            <input type="text" class="form-input" id="tournamentName" 
+                                   placeholder="Ej: Champions League 2025" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Número de Jugadores Humanos</label>
+                            <select class="form-select" id="numPlayers" required>
+                                <option value="">Seleccionar...</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="maxPlayersGroup">
+                            <label class="form-label">Máximo de Jugadores</label>
+                            <input type="number" class="form-input" id="maxPlayers" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración personalizada (solo para Copa Personalizada) -->
+                <div class="form-section custom-config" id="customConfig">
+                    <h3 class="section-title">Configuración Personalizada</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Número de Equipos</label>
+                            <select class="form-select" id="customTeams">
+                                <option value="">Seleccionar...</option>
+                                <option value="8">8 equipos</option>
+                                <option value="16">16 equipos</option>
+                                <option value="24">24 equipos</option>
+                                <option value="32">32 equipos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Formato del Torneo</label>
+                            <select class="form-select" id="customFormat">
+                                <option value="">Seleccionar...</option>
+                                <option value="GROUP_AND_KNOCKOUT">Grupos + Eliminatorias</option>
+                                <option value="KNOCKOUT_ONLY">Solo Eliminatorias</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Equipos</label>
+                            <select class="form-select" id="customTeamType">
+                                <option value="">Seleccionar...</option>
+                                <option value="COUNTRY">Selecciones Nacionales</option>
+                                <option value="CLUB">Clubes</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Región</label>
+                            <select class="form-select" id="customRegion">
+                                <option value="">Seleccionar...</option>
+                                <option value="WORLDWIDE">Mundial</option>
+                                <option value="EUROPE">Europa</option>
+                                <option value="SOUTH_AMERICA">Sudamérica</option>
+                                <option value="NORTH_AMERICA">Norteamérica</option>
+                                <option value="AFRICA">África</option>
+                                <option value="ASIA">Asia</option>
+                                <option value="OCEANIA">Oceanía</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Acciones del formulario -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="goBack()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Crear Torneo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentUser = null;
+        let selectedTournamentType = null;
+        let tournamentConfig = null;
+
+        // Configuración de la API
+        const API_CONFIG = {
+            authURL: 'http://localhost:8082',
+            tournamentURL: 'http://localhost:8085'
+        };
+
+        // Configuraciones de torneos
+        const TOURNAMENT_CONFIGS = {
+            'CHAMPIONS_LEAGUE': {
+                name: 'UEFA Champions League',
+                logoText: 'UCL',
+                logoClass: 'champions-league-logo',
+                bodyClass: 'champions-league',
+                numTeams: 32,
+                format: 'GROUP_AND_KNOCKOUT',
+                formatDisplay: 'Grupos + Eliminatorias',
+                teamType: 'CLUB',
+                teamTypeDisplay: 'Clubes',
+                region: 'EUROPE',
+                regionDisplay: 'Europa',
+                subtitle: 'La máxima competición europea de clubes'
+            },
+            'COPA_LIBERTADORES': {
+                name: 'Copa Santander Libertadores',
+                logoText: 'LIB',
+                logoClass: 'libertadores-logo',
+                bodyClass: 'libertadores',
+                numTeams: 32,
+                format: 'GROUP_AND_KNOCKOUT',
+                formatDisplay: 'Grupos + Eliminatorias',
+                teamType: 'CLUB',
+                teamTypeDisplay: 'Clubes',
+                region: 'SOUTH_AMERICA',
+                regionDisplay: 'Sudamérica',
+                subtitle: 'La gloria máxima del fútbol sudamericano'
+            },
+            'WORLD_CUP': {
+                name: 'Copa Mundial FIFA',
+                logoText: 'WC',
+                logoClass: 'world-cup-logo',
+                bodyClass: 'world-cup',
+                numTeams: 32,
+                format: 'GROUP_AND_KNOCKOUT',
+                formatDisplay: 'Grupos + Eliminatorias',
+                teamType: 'COUNTRY',
+                teamTypeDisplay: 'Selecciones',
+                region: 'WORLDWIDE',
+                regionDisplay: 'Mundial',
+                subtitle: 'El torneo más prestigioso del mundo'
+            },
+            'EURO_CUP': {
+                name: 'UEFA Euro',
+                logoText: 'EURO',
+                logoClass: 'euro-cup-logo',
+                bodyClass: 'euro-cup',
+                numTeams: 24,
+                format: 'GROUP_AND_KNOCKOUT',
+                formatDisplay: 'Grupos + Eliminatorias',
+                teamType: 'COUNTRY',
+                teamTypeDisplay: 'Selecciones',
+                region: 'EUROPE',
+                regionDisplay: 'Europa',
+                subtitle: 'Campeonato europeo de selecciones'
+            },
+            'COPA_AMERICA': {
+                name: 'Copa América',
+                logoText: 'CA',
+                logoClass: 'copa-america-logo',
+                bodyClass: 'copa-america',
+                numTeams: 16,
+                format: 'GROUP_AND_KNOCKOUT',
+                formatDisplay: 'Grupos + Eliminatorias',
+                teamType: 'COUNTRY',
+                teamTypeDisplay: 'Selecciones',
+                region: 'AMERICA',
+                regionDisplay: 'América',
+                subtitle: 'La competición de selecciones más antigua'
+            },
+            'CUSTOM_TOURNAMENT': {
+                name: 'Copa Personalizada',
+                logoText: 'COPA',
+                logoClass: 'custom-logo',
+                bodyClass: 'custom',
+                numTeams: null,
+                format: null,
+                formatDisplay: 'Personalizable',
+                teamType: null,
+                teamTypeDisplay: 'A elegir',
+                region: 'WORLDWIDE',
+                regionDisplay: 'Personalizable',
+                subtitle: 'Crea tu torneo con tus propias reglas'
+            }
+        };
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            initializePage();
+        });
+
+        // Crear partículas de fondo
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (4 + Math.random() * 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Inicializar página
+        function initializePage() {
+            // Verificar autenticación
+            const savedUser = sessionStorage.getItem('copaUser');
+            if (!savedUser) {
+                window.location.href = 'tournament-selection.html';
+                return;
+            }
+
+            currentUser = JSON.parse(savedUser);
+            document.getElementById('username').textContent = currentUser.fullName || currentUser.username;
+
+            // Obtener tipo de torneo seleccionado
+            selectedTournamentType = sessionStorage.getItem('selectedTournamentType') || 'CHAMPIONS_LEAGUE';
+            
+            // Configurar página según el torneo
+            setupTournamentPage();
+            
+            // Configurar formulario
+            setupForm();
+        }
+
+        // Configurar página según el torneo
+        function setupTournamentPage() {
+            const config = TOURNAMENT_CONFIGS[selectedTournamentType];
+            if (!config) return;
+
+            // Aplicar tema visual
+            document.getElementById('pageBody').className = config.bodyClass;
+            
+            // Configurar logo
+            const logo = document.getElementById('competitionLogo');
+            logo.className = `competition-logo ${config.logoClass}`;
+            document.getElementById('logoText').textContent = config.logoText;
+            
+            // Configurar textos
+            document.getElementById('competitionTitle').textContent = config.name;
+            document.getElementById('competitionSubtitle').textContent = config.subtitle;
+            
+            // Configurar información predefinida
+            if (selectedTournamentType !== 'CUSTOM_TOURNAMENT') {
+                document.getElementById('infoTeams').textContent = config.numTeams;
+                document.getElementById('infoFormat').textContent = config.formatDisplay;
+                document.getElementById('infoType').textContent = config.teamTypeDisplay;
+                document.getElementById('infoRegion').textContent = config.regionDisplay;
+                
+                // Mostrar sección predefinida
+                document.getElementById('predefinedSection').style.display = 'block';
+                document.getElementById('customConfig').classList.remove('active');
+            } else {
+                // Ocultar sección predefinida y mostrar personalizada
+                document.getElementById('predefinedSection').style.display = 'none';
+                document.getElementById('customConfig').classList.add('active');
+            }
+        }
+
+        // Configurar formulario
+        function setupForm() {
+            const config = TOURNAMENT_CONFIGS[selectedTournamentType];
+            
+            // Nombre por defecto
+            document.getElementById('tournamentName').value = config.name + ' 2025';
+            
+            // Configurar select de jugadores
+            const numPlayersSelect = document.getElementById('numPlayers');
+            const maxTeams = config.numTeams || 32;
+            
+            numPlayersSelect.innerHTML = '<option value="">Seleccionar...</option>';
+            for (let i = 1; i <= maxTeams; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `${i} jugador${i > 1 ? 'es' : ''}`;
+                numPlayersSelect.appendChild(option);
+            }
+            
+            // Mostrar máximo de jugadores
+            document.getElementById('maxPlayers').value = maxTeams;
+            
+            // Configurar eventos para Copa Personalizada
+            if (selectedTournamentType === 'CUSTOM_TOURNAMENT') {
+                document.getElementById('customTeams').addEventListener('change', updateCustomPlayers);
+            }
+            
+            // Configurar evento del formulario
+            document.getElementById('configForm').addEventListener('submit', handleSubmit);
+        }
+
+        // Actualizar jugadores para copa personalizada
+        function updateCustomPlayers() {
+            const customTeams = document.getElementById('customTeams').value;
+            const numPlayersSelect = document.getElementById('numPlayers');
+            
+            if (customTeams) {
+                const maxTeams = parseInt(customTeams);
+                numPlayersSelect.innerHTML = '<option value="">Seleccionar...</option>';
+                
+                for (let i = 1; i <= maxTeams; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `${i} jugador${i > 1 ? 'es' : ''}`;
+                    numPlayersSelect.appendChild(option);
+                }
+                
+                document.getElementById('maxPlayers').value = maxTeams;
+            }
+        }
+
+        // Manejar envío del formulario
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const formData = collectFormData();
+            
+            if (!validateFormData(formData)) {
+                return;
+            }
+            
+            try {
+                showLoading(true);
+                const tournament = await createTournament(formData);
+                
+                if (tournament) {
+                    // Guardar datos del torneo creado
+                    sessionStorage.setItem('createdTournament', JSON.stringify(tournament));
+                    
+                    showNotification('¡Torneo creado exitosamente!', 'success');
+                    
+                    // Redirigir a la página de setup después de 1.5 segundos
+                    setTimeout(() => {
+                        window.location.href = `tournament-setup.html?id=${tournament.id}`;
+                    }, 1500);
+                } else {
+                    throw new Error('No se pudo crear el torneo');
+                }
+            } catch (error) {
+                console.error('Error creando torneo:', error);
+                showNotification('Error al crear el torneo. Inténtalo de nuevo.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Recopilar datos del formulario
+        function collectFormData() {
+            const config = TOURNAMENT_CONFIGS[selectedTournamentType];
+            const baseData = {
+                name: document.getElementById('tournamentName').value.trim(),
+                numPlayers: parseInt(document.getElementById('numPlayers').value),
+                creatorUserId: currentUser.id,
+                tournamentType: selectedTournamentType
+            };
+
+            if (selectedTournamentType === 'CUSTOM_TOURNAMENT') {
+                // Configuración personalizada
+                return {
+                    ...baseData,
+                    numTeams: parseInt(document.getElementById('customTeams').value),
+                    tournamentFormat: document.getElementById('customFormat').value,
+                    teamType: document.getElementById('customTeamType').value,
+                    region: document.getElementById('customRegion').value
+                };
+            } else {
+                // Configuración predefinida
+                return {
+                    ...baseData,
+                    numTeams: config.numTeams,
+                    tournamentFormat: config.format,
+                    teamType: config.teamType,
+                    region: config.region
+                };
+            }
+        }
+
+        // Validar datos del formulario
+        function validateFormData(data) {
+            if (!data.name) {
+                showNotification('Por favor ingresa un nombre para el torneo', 'error');
+                return false;
+            }
+
+            if (!data.numPlayers) {
+                showNotification('Por favor selecciona el número de jugadores', 'error');
+                return false;
+            }
+
+            if (selectedTournamentType === 'CUSTOM_TOURNAMENT') {
+                if (!data.numTeams) {
+                    showNotification('Por favor selecciona el número de equipos', 'error');
+                    return false;
+                }
+                
+                if (!data.tournamentFormat) {
+                    showNotification('Por favor selecciona el formato del torneo', 'error');
+                    return false;
+                }
+                
+                if (!data.teamType) {
+                    showNotification('Por favor selecciona el tipo de equipos', 'error');
+                    return false;
+                }
+                
+                if (!data.region) {
+                    showNotification('Por favor selecciona la región', 'error');
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // Crear torneo via API
+        async function createTournament(data) {
+            try {
+                const response = await fetch(`${API_CONFIG.tournamentURL}/api/v1/tournaments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: data.name,
+                        tournamentType: data.tournamentType,
+                        tournamentFormat: data.tournamentFormat,
+                        numTeams: data.numTeams,
+                        numPlayers: data.numPlayers,
+                        creatorUserId: data.creatorUserId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Error en la API:', error);
+                throw error;
+            }
+        }
+
+        // Volver a la página anterior
+        function goBack() {
+            window.location.href = 'tournament-selection.html';
+        }
+
+        // Mostrar loading
+        function showLoading(show) {
+            const submitBtn = document.querySelector('button[type="submit"]');
+            const allInputs = document.querySelectorAll('input, select');
+            
+            if (show) {
+                submitBtn.textContent = 'Creando...';
+                submitBtn.disabled = true;
+                allInputs.forEach(input => input.disabled = true);
+            } else {
+                submitBtn.textContent = 'Crear Torneo';
+                submitBtn.disabled = false;
+                allInputs.forEach(input => input.disabled = false);
+            }
+        }
+
+        // Mostrar notificación
+        function showNotification(message, type) {
+            // Remover notificaciones existentes
+            const existing = document.querySelector('.notification');
+            if (existing) {
+                existing.remove();
+            }
+
+            // Crear nueva notificación
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                max-width: 400px;
+                word-wrap: break-word;
+                ${type === 'success' ? 'background: rgba(0, 255, 128, 0.9); border: 1px solid #00ff80;' : ''}
+                ${type === 'error' ? 'background: rgba(255, 0, 64, 0.9); border: 1px solid #ff0040;' : ''}
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto remover después de 5 segundos
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        // Agregar estilos de animación para notificaciones
+        const notificationStyles = document.createElement('style');
+    </script>
+</body>
+</html>

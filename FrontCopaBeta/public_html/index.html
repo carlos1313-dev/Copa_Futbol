@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa Tournament Service Tester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .config-panel {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .test-section {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .endpoint-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .endpoint-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .method-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .get { background: #27ae60; color: white; }
+        .post { background: #3498db; color: white; }
+        .put { background: #f39c12; color: white; }
+        .delete { background: #e74c3c; color: white; }
+
+        .response-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success { background: #27ae60; }
+        .status-error { background: #e74c3c; }
+        .status-pending { background: #f39c12; }
+
+        .tournament-structure {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .available-teams, .tournament-bracket {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .team-item {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .team-item:hover {
+            background: #e3f2fd;
+        }
+
+        .group {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+        }
+
+        .position {
+            background: #f8f9fa;
+            border: 2px dashed #bdc3c7;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .position.occupied {
+            background: #d5edda;
+            border-color: #27ae60;
+            border-style: solid;
+        }
+
+        .position:hover {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .logs {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Copa Tournament Service Tester</h1>
+            <p>Probador completo del microservicio de Tournaments</p>
+        </div>
+
+        <!-- Configuración del Servidor -->
+        <div class="config-panel">
+            <h3>⚙️ Configuración del Servidor</h3>
+            <div class="config-grid">
+                <div class="form-group">
+                    <label>Base URL del Servidor:</label>
+                    <input type="text" id="baseUrl" value="http://localhost:8085/api/v1" placeholder="http://localhost:8085/api/v1">
+                </div>
+                <div class="form-group">
+                    <label>Usuario ID (para pruebas):</label>
+                    <input type="number" id="userId" value="1" placeholder="1">
+                </div>
+            </div>
+            <button class="btn btn-success" onclick="testConnection()">🔍 Probar Conexión</button>
+        </div>
+
+        <!-- Sección de Pruebas CRUD -->
+        <div class="test-section">
+            <h3>🎮 Operaciones CRUD - Tournaments</h3>
+            
+            <div class="test-grid">
+                <!-- Crear Torneo -->
+                <div class="endpoint-card">
+                    <span class="method-tag post">POST</span>
+                    <h4>Crear Torneo</h4>
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <input type="text" id="tournamentName" value="Copa Mundial Test" placeholder="Copa Mundial Test">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo:</label>
+                        <select id="tournamentType">
+                            <option value="WORLD_CUP">Copa Mundial</option>
+                            <option value="COPA_AMERICA">Copa América</option>
+                            <option value="EURO_CUP">Eurocopa</option>
+                            <option value="CHAMPIONS_LEAGUE">Champions League</option>
+                            <option value="CUSTOM">Personalizado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Formato:</label>
+                        <select id="tournamentFormat">
+                            <option value="GROUPS_KNOCKOUT">Grupos + Eliminación</option>
+                            <option value="KNOCKOUT_ONLY">Solo Eliminación</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Equipos:</label>
+                        <select id="numTeams">
+                            <option value="8">8 equipos</option>
+                            <option value="16">16 equipos</option>
+                            <option value="32">32 equipos</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="createTournament()">Crear Torneo</button>
+                </div>
+
+                <!-- Obtener Torneo -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Obtener Torneo por ID</h4>
+                    <div class="form-group">
+                        <label>Tournament ID:</label>
+                        <input type="number" id="getTournamentId" value="1" placeholder="1">
+                    </div>
+                    <button class="btn" onclick="getTournament()">Obtener Torneo</button>
+                </div>
+
+                <!-- Obtener por Estado -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Obtener por Estado</h4>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select id="statusFilter">
+                            <option value="CREATED">Creado</option>
+                            <option value="WAITING_PLAYERS">Esperando Jugadores</option>
+                            <option value="IN_PROGRESS">En Progreso</option>
+                            <option value="FINISHED">Finalizado</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="getTournamentsByStatus()">Buscar por Estado</button>
+                </div>
+
+                <!-- Obtener Torneos del Usuario -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Torneos del Usuario</h4>
+                    <button class="btn" onclick="getUserTournaments()">Mis Torneos</button>
+                </div>
+
+                <!-- Obtener Torneos Disponibles -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Torneos Disponibles</h4>
+                    <button class="btn" onclick="getAvailableTournaments()">Ver Disponibles</button>
+                </div>
+
+                <!-- Actualizar Estado -->
+                <div class="endpoint-card">
+                    <span class="method-tag put">PUT</span>
+                    <h4>Actualizar Estado</h4>
+                    <div class="form-group">
+                        <label>Tournament ID:</label>
+                        <input type="number" id="updateTournamentId" value="1" placeholder="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Nuevo Estado:</label>
+                        <select id="newStatus">
+                            <option value="WAITING_PLAYERS">Esperando Jugadores</option>
+                            <option value="IN_PROGRESS">En Progreso</option>
+                            <option value="FINISHED">Finalizado</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-warning" onclick="updateTournamentStatus()">Actualizar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Setup del Torneo -->
+        <div class="test-section">
+            <h3>🏟️ Setup del Torneo</h3>
+            
+            <div class="test-grid">
+                <!-- Obtener Equipos Disponibles -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Equipos Disponibles</h4>
+                    <div class="form-group">
+                        <label>Tournament ID:</label>
+                        <input type="number" id="setupTournamentId" value="1" placeholder="1">
+                    </div>
+                    <button class="btn" onclick="getAvailableTeams()">Ver Equipos</button>
+                </div>
+
+                <!-- Obtener Estructura -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Estructura del Torneo</h4>
+                    <button class="btn" onclick="getTournamentStructure()">Ver Estructura</button>
+                </div>
+
+                <!-- Asignar Equipo -->
+                <div class="endpoint-card">
+                    <span class="method-tag post">POST</span>
+                    <h4>Asignar Equipo</h4>
+                    <div class="form-group">
+                        <label>Team ID:</label>
+                        <input type="number" id="assignTeamId" value="1" placeholder="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Player ID:</label>
+                        <input type="number" id="assignPlayerId" value="1" placeholder="1 (null para IA)">
+                    </div>
+                    <div class="form-group">
+                        <label>Posición:</label>
+                        <input type="number" id="assignPosition" value="1" placeholder="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Grupo (opcional):</label>
+                        <input type="text" id="assignGroup" value="A" placeholder="A">
+                    </div>
+                    <button class="btn" onclick="assignTeam()">Asignar Equipo</button>
+                </div>
+
+                <!-- Llenar Aleatoriamente -->
+                <div class="endpoint-card">
+                    <span class="method-tag post">POST</span>
+                    <h4>Llenar Aleatoriamente</h4>
+                    <div class="form-group">
+                        <label>Usar IA para vacantes:</label>
+                        <input type="checkbox" id="useAI" checked>
+                    </div>
+                    <button class="btn btn-success" onclick="fillRandom()">Llenar Aleatorio</button>
+                </div>
+
+                <!-- Resetear Setup -->
+                <div class="endpoint-card">
+                    <span class="method-tag post">POST</span>
+                    <h4>Resetear Setup</h4>
+                    <button class="btn btn-warning" onclick="resetTournament()">Resetear</button>
+                </div>
+
+                <!-- Finalizar Setup -->
+                <div class="endpoint-card">
+                    <span class="method-tag post">POST</span>
+                    <h4>Finalizar Setup</h4>
+                    <button class="btn btn-success" onclick="finalizeTournament()">Finalizar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Teams del Torneo -->
+        <div class="test-section">
+            <h3>👥 Equipos del Torneo</h3>
+            
+            <div class="test-grid">
+                <!-- Todos los Equipos -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Todos los Equipos</h4>
+                    <button class="btn" onclick="getAllTournamentTeams()">Ver Todos</button>
+                </div>
+
+                <!-- Equipos por Grupo -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Equipos por Grupo</h4>
+                    <div class="form-group">
+                        <label>Grupo:</label>
+                        <select id="groupName">
+                            <option value="A">Grupo A</option>
+                            <option value="B">Grupo B</option>
+                            <option value="C">Grupo C</option>
+                            <option value="D">Grupo D</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="getTeamsByGroup()">Ver Grupo</button>
+                </div>
+
+                <!-- Equipos por Jugador -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Equipos por Jugador</h4>
+                    <div class="form-group">
+                        <label>Player ID:</label>
+                        <input type="number" id="playerIdFilter" value="1" placeholder="1">
+                    </div>
+                    <button class="btn" onclick="getTeamsByPlayer()">Ver Equipos</button>
+                </div>
+
+                <!-- Equipos Activos -->
+                <div class="endpoint-card">
+                    <span class="method-tag get">GET</span>
+                    <h4>Equipos Activos</h4>
+                    <button class="btn" onclick="getActiveTeams()">Ver Activos</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulador Visual del Torneo -->
+        <div class="test-section">
+            <h3>🎯 Simulador Visual del Torneo</h3>
+            <div class="tournament-structure">
+                <div class="available-teams">
+                    <h4>Equipos Disponibles</h4>
+                    <div id="availableTeamsList">
+                        <div class="team-item" onclick="selectTeam(1, 'España')">🇪🇸 España</div>
+                        <div class="team-item" onclick="selectTeam(2, 'Brasil')">🇧🇷 Brasil</div>
+                        <div class="team-item" onclick="selectTeam(3, 'Argentina')">🇦🇷 Argentina</div>
+                        <div class="team-item" onclick="selectTeam(4, 'Francia')">🇫🇷 Francia</div>
+                        <div class="team-item" onclick="selectTeam(5, 'Alemania')">🇩🇪 Alemania</div>
+                        <div class="team-item" onclick="selectTeam(6, 'Inglaterra')">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</div>
+                        <div class="team-item" onclick="selectTeam(7, 'Italia')">🇮🇹 Italia</div>
+                        <div class="team-item" onclick="selectTeam(8, 'Portugal')">🇵🇹 Portugal</div>
+                    </div>
+                </div>
+                
+                <div class="tournament-bracket">
+                    <h4>Estructura del Torneo</h4>
+                    <div id="tournamentBracket">
+                        <div class="group">
+                            <h5>Grupo A</h5>
+                            <div class="position" onclick="assignToPosition('A', 1)">Posición 1</div>
+                            <div class="position" onclick="assignToPosition('A', 2)">Posición 2</div>
+                            <div class="position" onclick="assignToPosition('A', 3)">Posición 3</div>
+                            <div class="position" onclick="assignToPosition('A', 4)">Posición 4</div>
+                        </div>
+                        <div class="group">
+                            <h5>Grupo B</h5>
+                            <div class="position" onclick="assignToPosition('B', 1)">Posición 1</div>
+                            <div class="position" onclick="assignToPosition('B', 2)">Posición 2</div>
+                            <div class="position" onclick="assignToPosition('B', 3)">Posición 3</div>
+                            <div class="position" onclick="assignToPosition('B', 4)">Posición 4</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de Respuestas -->
+        <div class="test-section">
+            <h3>📊 Respuestas del Servidor</h3>
+            <div id="responseArea" class="response-area">
+                Esperando respuestas del servidor...
+            </div>
+        </div>
+
+        <!-- Logs del Sistema -->
+        <div class="test-section">
+            <h3>📝 Logs del Sistema</h3>
+            <div id="systemLogs" class="logs">
+                [SYSTEM] Copa Tournament Tester iniciado
+                [INFO] Configuración por defecto cargada
+                [READY] Sistema listo para pruebas
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let selectedTeam = null;
+        let currentTournamentId = 1;
+        
+        // Función para agregar logs
+        function addLog(message, type = 'INFO') {
+            const logs = document.getElementById('systemLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            logs.innerHTML += `\n[${timestamp}] [${type}] ${message}`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // Función para mostrar respuesta
+        function showResponse(data, status = 'success') {
+            const responseArea = document.getElementById('responseArea');
+            const statusClass = status === 'success' ? 'status-success' : 'status-error';
+            responseArea.innerHTML = `
+                <div style="margin-bottom: 10px;">
+                    <span class="status-indicator ${statusClass}"></span>
+                    <strong>Estado: ${status === 'success' ? 'Éxito' : 'Error'}</strong>
+                </div>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+
+        // Función para hacer peticiones HTTP
+        async function makeRequest(method, endpoint, body = null) {
+            const baseUrl = document.getElementById('baseUrl').value;
+            const url = `${baseUrl}${endpoint}`;
+            
+            addLog(`${method} ${url}`, 'REQUEST');
+            
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addLog(`Respuesta exitosa: ${response.status}`, 'SUCCESS');
+                    showResponse(data, 'success');
+                    return data;
+                } else {
+                    addLog(`Error en respuesta: ${response.status}`, 'ERROR');
+                    showResponse(data, 'error');
+                    return null;
+                }
+            } catch (error) {
+                addLog(`Error de conexión: ${error.message}`, 'ERROR');
+                showResponse({error: error.message}, 'error');
+                return null;
+            }
+        }
+
+        // Probar conexión
+        async function testConnection() {
+            addLog('Probando conexión con el servidor...', 'TEST');
+            await makeRequest('GET', '/tournaments/available');
+        }
+
+        // CRUD Operations
+        async function createTournament() {
+            const tournamentData = {
+                name: document.getElementById('tournamentName').value,
+                tournamentType: document.getElementById('tournamentType').value,
+                tournamentFormat: document.getElementById('tournamentFormat').value,
+                numTeams: parseInt(document.getElementById('numTeams').value),
+                creatorUserId: parseInt(document.getElementById('userId').value)
+            };
+            
+            const result = await makeRequest('POST', '/tournaments', tournamentData);
+            if (result && result.id) {
+                currentTournamentId = result.id;
+                document.getElementById('setupTournamentId').value = result.id;
+                addLog(`Torneo creado con ID: ${result.id}`, 'SUCCESS');
+            }
+        }
+
+        async function getTournament() {
+            const id = document.getElementById('getTournamentId').value;
+            await makeRequest('GET', `/tournaments/${id}`);
+        }
+
+        async function getTournamentsByStatus() {
+            const status = document.getElementById('statusFilter').value;
+            await makeRequest('GET', `/tournaments/status/${status}`);
+        }
+
+        async function getUserTournaments() {
+            const userId = document.getElementById('userId').value;
+            await makeRequest('GET', `/tournaments/user/${userId}`);
+        }
+
+        async function getAvailableTournaments() {
+            await makeRequest('GET', '/tournaments/available');
+        }
+
+        async function updateTournamentStatus() {
+            const id = document.getElementById('updateTournamentId').value;
+            const status = document.getElementById('newStatus').value;
+            await makeRequest('PUT', `/tournaments/${id}/status?status=${status}`);
+        }
+
+        // Setup Operations
+        async function getAvailableTeams() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            await makeRequest('GET', `/tournaments/${tournamentId}/available-teams`);
+        }
+
+        async function getTournamentStructure() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            const result = await makeRequest('GET', `/tournaments/${tournamentId}/structure`);
+            if (result) {
+                updateVisualStructure(result);
+            }
+        }
+
+        async function assignTeam() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            const assignData = {
+                teamId: parseInt(document.getElementById('assignTeamId').value),
+                playerId: document.getElementById('assignPlayerId').value ? parseInt(document.getElementById('assignPlayerId').value) : null,
+                position: parseInt(document.getElementById('assignPosition').value),
+                groupName: document.getElementById('assignGroup').value || null
+            };
+            
+            await makeRequest('POST', `/tournaments/${tournamentId}/assign-team`, assignData);
+        }
+
+        async function fillRandom() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            const fillData = {
+                useAI: document.getElementById('useAI').checked
+            };
+            
+            await makeRequest('POST', `/tournaments/${tournamentId}/fill-random`, fillData);
+        }
+
+        async function resetTournament() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            await makeRequest('POST', `/tournaments/${tournamentId}/reset`);
+        }
+
+        async function finalizeTournament() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            await makeRequest('POST', `/tournaments/${tournamentId}/finalize`);
+        }
+
+        // Teams Operations
+        async function getAllTournamentTeams() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            await makeRequest('GET', `/tournaments/${tournamentId}/teams`);
+        }
+
+        async function getTeamsByGroup() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            const groupName = document.getElementById('groupName').value;
+            await makeRequest('GET', `/tournaments/${tournamentId}/teams/group/${groupName}`);
+        }
+
+        async function getTeamsByPlayer() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            const playerId = document.getElementById('playerIdFilter').value;
+            await makeRequest('GET', `/tournaments/${tournamentId}/teams/player/${playerId}`);
+        }
+
+        async function getActiveTeams() {
+            const tournamentId = document.getElementById('setupTournamentId').value;
+            await makeRequest('GET', `/tournaments/${tournamentId}/teams/active`);
+        }
+
+        // Visual Interface Functions
+        function selectTeam(teamId, teamName) {
+            selectedTeam = { id: teamId, name: teamName };
+            addLog(`Equipo seleccionado: ${teamName} (ID: ${teamId})`, 'USER');
+            
+            // Resaltar equipo seleccionado
+            document.querySelectorAll('.team-item').forEach(item => {
+                item.style.background = 'white';
+            });
+            event.target.style.background = '#e3f2fd';
+        }
+
+        function assignToPosition(group, position) {
+            if (!selectedTeam) {
+                addLog('Por favor selecciona un equipo primero', 'WARNING');
+                return;
+            }
+            
+            document.getElementById('assignTeamId').value = selectedTeam.id;
+            document.getElementById('assignPlayerId').value = document.getElementById('userId').value;
+            document.getElementById('assignPosition').value = position;
+            document.getElementById('assignGroup').value = group;
+            
+            addLog(`Asignando ${selectedTeam.name} a Grupo ${group}, Posición ${position}`, 'USER');
+            assignTeam();
+        }
+
+        function updateVisualStructure(structure) {
+            // Actualizar la estructura visual basada en la respuesta del servidor
+            if (structure.groups) {
+                updateGroupsDisplay(structure.groups);
+            } else if (structure.bracket) {
+                updateBracketDisplay(structure.bracket);
+            }
+        }
+
+        function updateGroupsDisplay(groups) {
+            const bracket = document.getElementById('tournamentBracket');
+            bracket.innerHTML = '<h4>Estructura del Torneo (Grupos)</h4>';
+            
+            groups.forEach(group => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'group';
+                groupDiv.innerHTML = `<h5>Grupo ${group.name}</h5>`;
+                
+                group.positions.forEach(pos => {
+                    const posDiv = document.createElement('div');
+                    posDiv.className = pos.occupied ? 'position occupied' : 'position';
+                    posDiv.textContent = pos.occupied ? pos.teamName : `Posición ${pos.number}`;
+                    posDiv.onclick = () => assignToPosition(group.name, pos.number);
+                    groupDiv.appendChild(posDiv);
+                });
+                
+                bracket.appendChild(groupDiv);
+            });
+        }
+
+        function updateBracketDisplay(bracket) {
+            const bracketDiv = document.getElementById('tournamentBracket');
+            bracketDiv.innerHTML = '<h4>Estructura del Torneo (Eliminatorias)</h4>';
+            
+            bracket.rounds.forEach((round, roundIndex) => {
+                const roundDiv = document.createElement('div');
+                roundDiv.className = 'group';
+                roundDiv.innerHTML = `<h5>${round.name}</h5>`;
+                
+                round.positions.forEach(pos => {
+                    const posDiv = document.createElement('div');
+                    posDiv.className = pos.occupied ? 'position occupied' : 'position';
+                    posDiv.textContent = pos.occupied ? pos.teamName : `Posición ${pos.number}`;
+                    posDiv.onclick = () => assignToPosition(null, pos.number);
+                    roundDiv.appendChild(posDiv);
+                });
+                
+                bracketDiv.appendChild(roundDiv);
+            });
+        }
+
+        // Función para ejecutar una secuencia de pruebas automáticas
+        async function runFullTest() {
+            addLog('Iniciando prueba completa del sistema...', 'TEST');
+            
+            // 1. Crear torneo
+            addLog('Paso 1: Creando torneo...', 'TEST');
+            await createTournament();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 2. Obtener equipos disponibles
+            addLog('Paso 2: Obteniendo equipos disponibles...', 'TEST');
+            await getAvailableTeams();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 3. Ver estructura
+            addLog('Paso 3: Obteniendo estructura del torneo...', 'TEST');
+            await getTournamentStructure();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 4. Asignar algunos equipos
+            addLog('Paso 4: Asignando equipos...', 'TEST');
+            document.getElementById('assignTeamId').value = '1';
+            document.getElementById('assignPlayerId').value = '1';
+            document.getElementById('assignPosition').value = '1';
+            document.getElementById('assignGroup').value = 'A';
+            await assignTeam();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 5. Llenar el resto aleatoriamente
+            addLog('Paso 5: Llenando posiciones restantes...', 'TEST');
+            await fillRandom();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 6. Ver equipos del torneo
+            addLog('Paso 6: Consultando equipos del torneo...', 'TEST');
+            await getAllTournamentTeams();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 7. Finalizar setup
+            addLog('Paso 7: Finalizando setup...', 'TEST');
+            await finalizeTournament();
+            
+            addLog('Prueba completa finalizada!', 'SUCCESS');
+        }
+
+        // Función para limpiar logs
+        function clearLogs() {
+            document.getElementById('systemLogs').innerHTML = '[SYSTEM] Logs limpiados';
+            document.getElementById('responseArea').innerHTML = 'Esperando respuestas del servidor...';
+        }
+
+        // Función para exportar configuración de prueba
+        function exportTestConfig() {
+            const config = {
+                baseUrl: document.getElementById('baseUrl').value,
+                userId: document.getElementById('userId').value,
+                tournament: {
+                    name: document.getElementById('tournamentName').value,
+                    type: document.getElementById('tournamentType').value,
+                    format: document.getElementById('tournamentFormat').value,
+                    numTeams: document.getElementById('numTeams').value
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tournament-test-config.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            addLog('Configuración exportada', 'SUCCESS');
+        }
+
+        // Función para importar configuración
+        function importTestConfig(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const config = JSON.parse(e.target.result);
+                        
+                        document.getElementById('baseUrl').value = config.baseUrl;
+                        document.getElementById('userId').value = config.userId;
+                        document.getElementById('tournamentName').value = config.tournament.name;
+                        document.getElementById('tournamentType').value = config.tournament.type;
+                        document.getElementById('tournamentFormat').value = config.tournament.format;
+                        document.getElementById('numTeams').value = config.tournament.numTeams;
+                        
+                        addLog('Configuración importada exitosamente', 'SUCCESS');
+                    } catch (error) {
+                        addLog(`Error importando configuración: ${error.message}`, 'ERROR');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Función para monitorear el estado del servidor
+        async function monitorServerHealth() {
+            try {
+                const response = await fetch(document.getElementById('baseUrl').value + '/tournaments/available');
+                const indicator = document.getElementById('serverStatus');
+                if (response.ok) {
+                    indicator.className = 'status-indicator status-success';
+                    indicator.title = 'Servidor conectado';
+                } else {
+                    indicator.className = 'status-indicator status-error';
+                    indicator.title = 'Error de servidor';
+                }
+            } catch (error) {
+                const indicator = document.getElementById('serverStatus');
+                indicator.className = 'status-indicator status-error';
+                indicator.title = 'Servidor desconectado';
+            }
+        }
+
+        // Inicializar cuando la página carga
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('Sistema inicializado correctamente', 'SUCCESS');
+            
+            // Monitorear salud del servidor cada 30 segundos
+            setInterval(monitorServerHealth, 30000);
+            monitorServerHealth();
+            
+            // Agregar botones adicionales
+            const headerDiv = document.querySelector('.header');
+            headerDiv.innerHTML += `
+                <div style="margin-top: 15px;">
+                    <span id="serverStatus" class="status-indicator status-pending" title="Verificando..."></span>
+                    <button class="btn btn-success" onclick="runFullTest()">🚀 Prueba Completa</button>
+                    <button class="btn btn-warning" onclick="clearLogs()">🧹 Limpiar Logs</button>
+                    <button class="btn" onclick="exportTestConfig()">💾 Exportar Config</button>
+                    <input type="file" id="importConfig" accept=".json" style="display:none" onchange="importTestConfig(event)">
+                    <button class="btn" onclick="document.getElementById('importConfig').click()">📁 Importar Config</button>
+                </div>
+            `;
+        });
+
+        // Atajos de teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 'Enter':
+                        event.preventDefault();
+                        runFullTest();
+                        break;
+                    case 'l':
+                        event.preventDefault();
+                        clearLogs();
+                        break;
+                    case 't':
+                        event.preventDefault();
+                        testConnection();
+                        break;
+                }
+            }
+        });
+
+        // Función para simular datos de prueba realistas
+        function loadSampleData() {
+            const sampleTournaments = [
+                { name: "Copa Mundial FIFA 2024", type: "WORLD_CUP", format: "GROUPS_KNOCKOUT", teams: 32 },
+                { name: "Copa América 2024", type: "COPA_AMERICA", format: "GROUPS_KNOCKOUT", teams: 16 },
+                { name: "Eurocopa 2024", type: "EURO_CUP", format: "GROUPS_KNOCKOUT", teams: 24 },
+                { name: "Champions League", type: "CHAMPIONS_LEAGUE", format: "GROUPS_KNOCKOUT", teams: 32 },
+                { name: "Torneo Personalizado", type: "CUSTOM", format: "KNOCKOUT_ONLY", teams: 8 }
+            ];
+            
+            const randomTournament = sampleTournaments[Math.floor(Math.random() * sampleTournaments.length)];
+            
+            document.getElementById('tournamentName').value = randomTournament.name;
+            document.getElementById('tournamentType').value = randomTournament.type;
+            document.getElementById('tournamentFormat').value = randomTournament.format;
+            document.getElementById('numTeams').value = randomTournament.teams;
+            
+            addLog(`Datos de muestra cargados: ${randomTournament.name}`, 'SUCCESS');
+        }
+
+        // Agregar botón para cargar datos de muestra
+        setTimeout(() => {
+            const configPanel = document.querySelector('.config-panel');
+            configPanel.innerHTML += `
+                <button class="btn" onclick="loadSampleData()" style="margin-top: 10px;">
+                    🎲 Cargar Datos de Muestra
+                </button>
+            `;
+        }, 1000);
+    </script>
+</body>
+</html>

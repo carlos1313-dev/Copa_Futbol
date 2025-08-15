@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa - Autenticación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Fondo animado con partículas */
+        .background-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00a8ff;
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        /* Header */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 50px;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 20px #00a8ff;
+            letter-spacing: 2px;
+        }
+
+        .logo .highlight {
+            color: #00a8ff;
+        }
+
+        /* Contenedor principal */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Card de autenticación */
+        .auth-card {
+            background: rgba(0, 20, 40, 0.9);
+            border: 2px solid #00a8ff;
+            border-radius: 15px;
+            box-shadow: 
+                0 0 30px rgba(0, 168, 255, 0.3),
+                inset 0 0 20px rgba(0, 168, 255, 0.1);
+            padding: 40px;
+            width: 450px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00a8ff, transparent);
+            animation: glow-line 2s infinite;
+        }
+
+        @keyframes glow-line {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 168, 255, 0.3);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-button.active {
+            color: #00a8ff;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #00a8ff;
+            box-shadow: 0 0 10px #00a8ff;
+        }
+
+        .tab-button:hover:not(.active) {
+            color: #ccc;
+        }
+
+        /* Forms */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            color: #00a8ff;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 40, 80, 0.8);
+            border: 1px solid rgba(0, 168, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00a8ff;
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.4);
+            background: rgba(0, 40, 80, 0.9);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        /* Botones */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #00a8ff, #0078d4);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 168, 255, 0.4);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Mensajes */
+        .message {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 128, 0.1);
+            border: 1px solid #00ff80;
+            color: #00ff80;
+        }
+
+        .message.error {
+            background: rgba(255, 0, 64, 0.1);
+            border: 1px solid #ff0040;
+            color: #ff0040;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #00a8ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Validation styles */
+        .form-input.error {
+            border-color: #ff0040;
+            box-shadow: 0 0 10px rgba(255, 0, 64, 0.3);
+        }
+
+        .validation-message {
+            color: #ff0040;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Footer info */
+        .auth-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 500px) {
+            .auth-card {
+                width: 90%;
+                padding: 30px 25px;
+            }
+            
+            .header {
+                padding: 15px 25px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fondo con partículas -->
+    <div class="background-particles" id="particles"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <span class="highlight">COPA</span> 2025
+        </div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button class="tab-button active" onclick="switchTab('login')">INICIAR SESIÓN</button>
+                <button class="tab-button" onclick="switchTab('register')">REGISTRARSE</button>
+            </div>
+
+            <!-- Mensaje de respuesta -->
+            <div id="message" class="message" style="display: none;"></div>
+
+            <!-- Loading -->
+            <div id="loading" class="loading"></div>
+
+            <!-- Tab Login -->
+            <div id="login-tab" class="tab-content active">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Usuario o Email</label>
+                        <input type="text" class="form-input" id="login-username" placeholder="Ingresa tu usuario o email" required>
+                        <div class="validation-message" id="login-username-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" class="form-input" id="login-password" placeholder="Ingresa tu contraseña" required>
+                        <div class="validation-message" id="login-password-error"></div>
+                    </div>
+
+                    <button type="submit" class="btn">INICIAR SESIÓN</button>
+                </form>
+            </div>
+
+            <!-- Tab Register -->
+            <div id="register-tab" class="tab-content">
+                <form id="register-form">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-input" id="register-fullname" placeholder="Tu nombre completo" required>
+                        <div class="validation-message" id="register-fullname-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" class="form-input" id="register-username" placeholder="Elige un nombre de usuario" required>
+                        <div class="validation-message" id="register-username-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="register-email" placeholder="tu@email.com" required>
+                        <div class="validation-message" id="register-email-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" class="form-input" id="register-password" placeholder="Mínimo 6 caracteres" required>
+                        <div class="validation-message" id="register-password-error"></div>
+                    </div>
+
+                    <button type="submit" class="btn">CREAR CUENTA</button>
+                </form>
+            </div>
+
+            <div class="auth-footer">
+                <p>Copa Football Tournament System 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la API
+        const API_CONFIG = {
+            authURL: 'http://localhost:8082', // Puerto del servicio de auth
+            tournamentURL: 'http://localhost:8085', // Puerto del servicio de torneos
+            endpoints: {
+                login: '/users/login',
+                register: '/users/register',
+                checkUsername: '/users/check-username',
+                checkEmail: '/users/check-email'
+            }
+        };
+
+        // Estado de la aplicación
+        let currentUser = null;
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            setupFormValidation();
+            checkExistingSession();
+        });
+
+        // Crear partículas de fondo
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (3 + Math.random() * 3) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Cambiar entre tabs
+        function switchTab(tab) {
+            // Actualizar botones
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+
+            // Actualizar contenido
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tab}-tab`).classList.add('active');
+
+            // Limpiar mensajes
+            hideMessage();
+            clearValidationErrors();
+        }
+
+        // Configurar validación de formularios
+        function setupFormValidation() {
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+
+            // Register form
+            document.getElementById('register-form').addEventListener('submit', handleRegister);
+
+            // Validación en tiempo real para registro
+            document.getElementById('register-username').addEventListener('blur', validateUsername);
+            document.getElementById('register-email').addEventListener('blur', validateEmail);
+            document.getElementById('register-password').addEventListener('input', validatePassword);
+        }
+
+        // Manejo del login
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const usernameOrEmail = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!usernameOrEmail || !password) {
+                showMessage('Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_CONFIG.authURL}${API_CONFIG.endpoints.login}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        usernameOrEmail: usernameOrEmail,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    currentUser = data.user;
+                    // Guardar sesión
+                    sessionStorage.setItem('copaUser', JSON.stringify(currentUser));
+                    showMessage('¡Bienvenido de vuelta!', 'success');
+                    
+                    // Redirigir después de 1.5 segundos
+                    setTimeout(() => {
+                        redirectToTournaments();
+                    }, 1500);
+                } else {
+                    showMessage(data.message || 'Error al iniciar sesión', 'error');
+                }
+            } catch (error) {
+                console.error('Error en login:', error);
+                showMessage('Error de conexión. Verifica tu conexión a internet.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Manejo del registro
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('register-fullname').value.trim();
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+
+            // Validaciones básicas
+            if (!fullName || !username || !email || !password) {
+                showMessage('Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            if (fullName.length < 2) {
+                showValidationError('register-fullname', 'El nombre debe tener al menos 2 caracteres');
+                return;
+            }
+
+            if (username.length < 3) {
+                showValidationError('register-username', 'El usuario debe tener al menos 3 caracteres');
+                return;
+            }
+
+            if (password.length < 6) {
+                showValidationError('register-password', 'La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${API_CONFIG.authURL}${API_CONFIG.endpoints.register}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fullName: fullName,
+                        username: username,
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showMessage('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.', 'success');
+                    // Cambiar a tab de login después de 2 segundos
+                    setTimeout(() => {
+                        switchTab('login');
+                        // Pre-llenar el campo de usuario
+                        document.getElementById('login-username').value = username;
+                    }, 2000);
+                } else {
+                    showMessage(data.message || 'Error al crear la cuenta', 'error');
+                }
+            } catch (error) {
+                console.error('Error en registro:', error);
+                showMessage('Error de conexión. Verifica tu conexión a internet.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Validar username disponible
+        async function validateUsername() {
+            const username = document.getElementById('register-username').value.trim();
+            if (username.length < 3) return;
+
+            try {
+                const response = await fetch(`${API_CONFIG.authURL}${API_CONFIG.endpoints.checkUsername}/${username}`);
+                const data = await response.json();
+                
+                if (!data.available) {
+                    showValidationError('register-username', 'Este usuario ya está en uso');
+                } else {
+                    clearValidationError('register-username');
+                }
+            } catch (error) {
+                console.error('Error validando usuario:', error);
+            }
+        }
+
+        // Validar email disponible
+        async function validateEmail() {
+            const email = document.getElementById('register-email').value.trim();
+            if (!email) return;
+
+            try {
+                const response = await fetch(`${API_CONFIG.authURL}${API_CONFIG.endpoints.checkEmail}/${email}`);
+                const data = await response.json();
+                
+                if (!data.available) {
+                    showValidationError('register-email', 'Este email ya está registrado');
+                } else {
+                    clearValidationError('register-email');
+                }
+            } catch (error) {
+                console.error('Error validando email:', error);
+            }
+        }
+
+        // Validar contraseña
+        function validatePassword() {
+            const password = document.getElementById('register-password').value;
+            if (password.length > 0 && password.length < 6) {
+                showValidationError('register-password', 'La contraseña debe tener al menos 6 caracteres');
+            } else {
+                clearValidationError('register-password');
+            }
+        }
+
+        // Mostrar mensaje
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+
+            // Auto-hide después de 5 segundos si es error
+            if (type === 'error') {
+                setTimeout(hideMessage, 5000);
+            }
+        }
+
+        // Ocultar mensaje
+        function hideMessage() {
+            document.getElementById('message').style.display = 'none';
+        }
+
+        // Mostrar/ocultar loading
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            
+            // Deshabilitar botones durante loading
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.disabled = show;
+            });
+        }
+
+        // Mostrar error de validación
+        function showValidationError(fieldId, message) {
+            const input = document.getElementById(fieldId);
+            const errorEl = document.getElementById(fieldId + '-error');
+            
+            input.classList.add('error');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        // Limpiar error de validación
+        function clearValidationError(fieldId) {
+            const input = document.getElementById(fieldId);
+            const errorEl = document.getElementById(fieldId + '-error');
+            
+            input.classList.remove('error');
+            errorEl.style.display = 'none';
+        }
+
+        // Limpiar todos los errores
+        function clearValidationErrors() {
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('error');
+            });
+            document.querySelectorAll('.validation-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+        }
+
+        // Verificar sesión existente
+        function checkExistingSession() {
+            const savedUser = sessionStorage.getItem('copaUser');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    redirectToTournaments();
+                } catch (error) {
+                    sessionStorage.removeItem('copaUser');
+                }
+            }
+        }
+
+        // Redirigir a configuración de torneos
+        function redirectToTournaments() {
+            if (!currentUser) {
+                console.error('No hay usuario logueado');
+                return;
+            }
+
+            showMessage(`¡Bienvenido ${currentUser.fullName || currentUser.username}! Redirigiendo...`, 'success');
+            
+            // Redirigir al puerto 8085 donde está la configuración de torneos
+            setTimeout(() => {
+                try {
+                    window.location.href = `http://localhost:8085/copa_tournament_configuration.html`;
+                } catch (error) {
+                    console.error('Error en la redirección:', error);
+                    // Fallback: usar solo el nombre del archivo si hay problemas con el puerto completo
+                    window.location.href = 'copa_tournament_configuration.html';
+                }
+            }, 1500);
+        }
+
+        // Función para obtener el usuario actual (para usar en otras páginas)
+        function getCurrentUser() {
+            return currentUser || JSON.parse(sessionStorage.getItem('copaUser') || 'null');
+        }
+
+        // Función para cerrar sesión (para usar en otras páginas)
+        function logout() {
+            currentUser = null;
+            sessionStorage.removeItem('copaUser');
+            // Redirigir al login
+            window.location.href = `http://localhost:8082/copa_auth.html`;
+        }
+
+        // Función para verificar si el usuario está autenticado
+        function requireAuth() {
+            const user = getCurrentUser();
+            if (!user) {
+                window.location.href = `http://localhost:8082/copa_auth.html`;
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
