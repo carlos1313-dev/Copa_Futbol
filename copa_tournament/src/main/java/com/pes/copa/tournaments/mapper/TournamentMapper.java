@@ -69,7 +69,7 @@ public class TournamentMapper {
                 .name(tournament.getName())
                 .tournamentType(tournament.getTournamentType().getDisplayName())
                 .tournamentFormat(tournament.getTournamentFormat().getDisplayName())
-                .status(tournament.getStatus().getDisplayName())
+                .tournamentStatus(tournament.getStatus().getDisplayName())
                 .numPlayers(tournament.getNumPlayers()) // Cambio aquí
                 .numTeams(tournament.getNumTeams()) // Cambio aquí
                 .createdDate(tournament.getCreatedDate())

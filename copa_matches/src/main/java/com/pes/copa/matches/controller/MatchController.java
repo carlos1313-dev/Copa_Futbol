@@ -25,7 +25,6 @@ public class MatchController {
         this.matchService = matchService;
     }
 
-    
     // GENERACIÓN DE PARTIDOS
     @PostMapping("/tournaments/{tournamentId}/generate")
     public ResponseEntity<String> generateTournamentMatches(@PathVariable Long tournamentId) {
@@ -63,11 +62,13 @@ public class MatchController {
 
     @GetMapping("/{matchId}")
     public ResponseEntity<MatchDTO> getMatchDetails(@PathVariable Long matchId) {
-        // Implementar lógica para obtener partido por ID
-        return ResponseEntity.notFound().build();
+        try {
+            MatchDTO match = matchService.getMatchById(matchId);
+            return ResponseEntity.ok(match);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
-
-
     // REGISTRO DE RESULTADOS
     @PostMapping("/results")
     public ResponseEntity<?> submitMatchResult(@Valid @RequestBody SubmitMatchResultDTO resultDTO) {
@@ -139,8 +140,9 @@ public class MatchController {
                 .filter(m -> "FINISHED".equals(m.getStatus()) || "SIMULATED".equals(m.getStatus())).count());
         summary.setPendingMatches((int) allMatches.stream()
                 .filter(m -> "PENDING".equals(m.getStatus())).count());
-        summary.setCompletionPercentage(summary.getTotalMatches() > 0 ?
-                (summary.getFinishedMatches() * 100.0) / summary.getTotalMatches() : 0.0);
+        summary.setCompletionPercentage(
+                summary.getTotalMatches() > 0 ? (summary.getFinishedMatches() * 100.0) / summary.getTotalMatches()
+                        : 0.0);
 
         return ResponseEntity.ok(summary);
     }
@@ -163,7 +165,7 @@ public class MatchController {
                 currentPhase.setCurrentPhase("GROUP_STAGE");
                 currentPhase.setPhaseName("Fase de Grupos");
             } else {
-                String[] phases = {"ROUND_16", "QUARTER_FINAL", "SEMI_FINAL", "THIRD_PLACE", "FINAL"};
+                String[] phases = { "ROUND_16", "QUARTER_FINAL", "SEMI_FINAL", "THIRD_PLACE", "FINAL" };
                 for (String phase : phases) {
                     boolean phaseHasMatches = allMatches.stream().anyMatch(m -> phase.equals(m.getPhase()));
                     if (phaseHasMatches) {

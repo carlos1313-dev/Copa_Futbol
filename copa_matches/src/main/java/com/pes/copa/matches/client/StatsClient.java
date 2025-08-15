@@ -4,6 +4,7 @@
  */
 package com.pes.copa.matches.client;
 
+import com.pes.copa.matches.dto.external.TeamPositionDTO;
 import com.pes.copa.matches.dto.response.MatchResultDTO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ public class StatsClient {
     }
     
     /**
-     * ✅ Notifica resultado de partido (llamada asíncrona)
+     *  Notifica resultado de partido (llamada asíncrona)
      */
     public void processMatchResult(MatchResultDTO matchResult) {
         try {
@@ -42,9 +43,9 @@ public class StatsClient {
     }
     
     /**
-     * ✅ Inicializa estadísticas de torneo
+     *  Inicializa estadísticas de torneo
      */
-    public void initializeTournamentStats(Long tournamentId, List<TournamentTeamDTO> teams) {
+    public void initializeTournamentStats(Long tournamentId, List<TeamPositionDTO> teams) {
         try {
             String url = statsServiceUrl + "/api/v1/stats/tournaments/" + tournamentId + "/initialize";
             restTemplate.postForObject(url, teams, Void.class);

@@ -40,19 +40,19 @@ public class TournamentSetUpService {
     private final TournamentTeamRepository tournamentTeamRepository;
     private final TournamentTeamsService tournamentTeamsService;
     private final TeamsServiceClient teamsServiceClient;
-    private final AuthServiceClient authServiceClient;
+//    private final AuthServiceClient authServiceClient;
     
     @Autowired
     public TournamentSetUpService(TournamentRepository tournamentRepository,
                                 TournamentTeamRepository tournamentTeamRepository,
                                 TournamentTeamsService tournamentTeamsService,
-                                TeamsServiceClient teamsServiceClient,
-                                AuthServiceClient authServiceClient) {
+                                TeamsServiceClient teamsServiceClient
+                                ) {
         this.tournamentRepository = tournamentRepository;
         this.tournamentTeamRepository = tournamentTeamRepository;
         this.tournamentTeamsService = tournamentTeamsService;
         this.teamsServiceClient = teamsServiceClient;
-        this.authServiceClient = authServiceClient;
+//        this.authServiceClient = authServiceClient;
     }
     
     /**

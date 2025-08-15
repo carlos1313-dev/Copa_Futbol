@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class TournamentClient {
     
-    @Value("${services.tournament.url:http://localhost:8082}")
+    @Value("${services.tournament.url:http://localhost:8080}")
     private String tournamentServiceUrl;
     
     private final RestTemplate restTemplate;

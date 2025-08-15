@@ -1,8 +1,10 @@
 package com.pes.copa.tournaments.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pes.copa.tournaments.enums.TournamentStatus;
 import lombok.Data;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
@@ -26,7 +28,7 @@ public class TournamentDTO {
     private String tournamentFormat; // String para mostrar nombre legible
     
     @JsonProperty("status")
-    private String status; // String para mostrar nombre legible
+    private String tournamentStatus; // String para mostrar nombre legible
     
     @JsonProperty("availableSlots")
     private Integer availableSlots;

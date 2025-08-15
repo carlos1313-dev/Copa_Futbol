@@ -17,24 +17,24 @@ import org.springframework.web.client.RestClientException;
 @Component
 public class AuthClient {
     
-    @Value("${services.auth.url:http://localhost:8082}")
-    private String authServiceUrl;
-    
-    private final RestTemplate restTemplate;
-    
-    public AuthClient(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-    
-    /**
-     * Obtiene información básica de un usuario
-     */
-    public UserDTO getUser(Long userId) {
-        try {
-            String url = authServiceUrl + "/api/v1/users/" + userId;
-            return restTemplate.getForObject(url, UserDTO.class);
-        } catch (RestClientException e) {
-            throw new RuntimeException("Failed to get user info: " + e.getMessage());
-        }
-    }
+//    @Value("${services.auth.url:http://localhost:8082}")
+//    private String authServiceUrl;
+//    
+//    private final RestTemplate restTemplate;
+//    
+//    public AuthClient(RestTemplate restTemplate) {
+//        this.restTemplate = restTemplate;
+//    }
+//    
+//    /**
+//     * Obtiene información básica de un usuario
+//     */
+//    public UserDTO getUser(Long userId) {
+//        try {
+//            String url = authServiceUrl + "/api/v1/users/" + userId;
+//            return restTemplate.getForObject(url, UserDTO.class);
+//        } catch (RestClientException e) {
+//            throw new RuntimeException("Failed to get user info: " + e.getMessage());
+//        }
+//    }
 }
